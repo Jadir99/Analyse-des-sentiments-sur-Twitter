@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>this is the result of the analyse by oout company  </h1>
+    <p>{{ statistiques }}</p>
+    
+    <img src="{{ url_for('static', filename='img/' + statistiques[0]) }}" alt="wordcloud Image">
+    <img src="{{ url_for('static', filename='img/' + statistiques[1]) }}" alt="Example Image">
+
+
+</body>
+</html>

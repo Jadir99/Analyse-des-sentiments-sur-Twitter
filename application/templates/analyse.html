@@ -112,9 +112,7 @@
               <div class="row col d-flex justify-content-center">
                 <div class="col-10">
                   <div class="card mb-4">
-                    <!-- <div class="card-header d-flex justify-content-between align-items-center">
-                      <h2 class="mb-0 text-center">What is infix and postfix expression?</h2>
-                    </div> -->
+                    </div> 
                     <h4 class="fw-bold py-3 mb-4 text-center pt-5 pb-0">
                       <span class="text-muted fw-light">DragonLearn/</span>
                       Sentiment Analyzer
@@ -139,7 +137,6 @@
                             </h4>
                           </button>
                         </h2>
-                        <p>{{ message }}</p>
                         <div
                           id="accordionOne"
                           class="accordion-collapse collapse show"
@@ -182,24 +179,24 @@
                                   aria-label="With textarea"
                                   placeholder="#example"
                                   rows="4"
-                                  id="infixe"
+                                  id="hashtag" required
                                 ></textarea>
                                 <!-- <input type="text" name="hashtag" id=""> -->
                               </div>
                             </div>
                           </div>
                         </div>
+                        <input type="submit" value="this is me" ></input>
                         <div class="row mt-3">
                           <div class="d-grid gap-2 col-lg-6 mx-auto">
                             <button
                               class="btn btn-secondary btn-lg"
-                              type="submit"
-                              onclick="infix_topostfixe()"
+                              type="submit" onclick="wait()"
                             >
                               Convert
                             </button>
                           </div>
-                        </div>
+                        </div>  
                       </form>
                     </div>
                   </div>
@@ -218,29 +215,13 @@
       <!-- Overlay -->
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+    <script>
+      function wait(){
+        alert("please wait")
+      }
+    </script>
     <!-- / Layout wrapper -->
 
-    <script>
-      // console.log("Calling Python...");
-      // eel.my_python_function(1, 2); // This calls the Python function that was decorated
-      //
-
-      let infixxe = document.getElementById("infixe");
-      let postfixe = document.getElementById("postfixe");
-
-      // envoyer infixe en potsfixe
-      function infix_topostfixe() {
-        eel.infix_to_postfix(infixxe.value)(function (result) {
-          postfixe.value = result;
-          // alert(result);
-        });
-      }
-      document.addEventListener("keydown", function (event) {
-        if (event.keyCode === 13) {
-          infix_topostfixe();
-        }
-      });
-    </script>
     <!-- Core JS -->
     <!-- build:js static/vendor/js/core.js -->
     <script src="../static/vendor/libs/jquery/jquery.js"></script>
