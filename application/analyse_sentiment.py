@@ -53,7 +53,7 @@ def login(hashtag):
     TimeStamps = []
     Tweets = []
 
-    while len(UserTags  )<=30:
+    while len(UserTags)<=50:
         
         # Find all the tweet article elements on the page
         articles = driver.find_elements(By.XPATH, "//article[@data-testid='tweet']")
@@ -62,7 +62,7 @@ def login(hashtag):
             try:
                 if(article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']")):
                     UserTag = article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']").text
-                    if UserTag not in UserTags and UserTag is not None:
+                    if (UserTag not in UserTags):
                         UserTags.append(UserTag)
                 if(article.find_element(By.XPATH, ".//time")):
                     TimeStamp = article.find_element(By.XPATH, ".//time").get_attribute('datetime')
@@ -147,11 +147,11 @@ def clean_data(path):
     df['UserTags']=df['UserTags'].str.lower()
 
     # make correige les faux d'ortographe 
-    df['Tweets']=df['Tweets'].apply(lambda x:replace_contractions(x))
+    df['Tweets']=df['Tweets'].apply(lambda x:replace_contractions(str(x)))
 
     # applciate the fucntion for claen from urls hashtasg ...
     df['Tweets']=df['Tweets'].apply(lambda x:remove_hashtags_mentions_URLS(x))
-    df['UserTags']=df['UserTags'].apply(lambda x:remove_hashtags_mentions_URLS(x))
+    df['UserTags']=df['UserTags'].apply(lambda x:remove_hashtags_mentions_URLS(str(x)))
     
     # applicate function to remove punctuation 
     df['Tweets']=df['Tweets'].apply(lambda x:removePunctuation(x))
@@ -180,7 +180,7 @@ def clean_data(path):
     bar_labels=['red','green','blue']
     bar_colors=['tab:red','tab:green','tab:blue']
     ax.bar(sentiments,counts,label=bar_labels,color=bar_colors)
-    plt.savefig('sentiments_bar_plot.png', bbox_inches='tight', pad_inches=0)
+    plt.savefig("static/img/"+''.join(path.split('.csv'))+'sentiments_bar_plot.png', bbox_inches='tight', pad_inches=0)
 
     # wordlcloud 
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(' '.join(df['Tweets'].values))
@@ -189,7 +189,7 @@ def clean_data(path):
     plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
-    plt.savefig('wordcloud.png', bbox_inches='tight', pad_inches=0)
+    plt.savefig("static/img/"+''.join(path.split('.csv'))+'wordcloud.png', bbox_inches='tight', pad_inches=0)
     # return path of images 
-    return ["wordcloud.png","sentiments_bar_plot.png"]
+    return [''.join(path.split('.csv'))+"wordcloud.png",''.join(path.split('.csv'))+"sentiments_bar_plot.png"]
 
