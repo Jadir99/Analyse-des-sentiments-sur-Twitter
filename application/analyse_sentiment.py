@@ -88,6 +88,87 @@ def login(hashtag):
 
 
 
+
+
+## this is for login and inspect the 
+
+def search_byname(name):
+    """
+    function for login and extract data from 
+    """
+
+    if '@' in name:
+        name = name.replace('@','')
+
+    PATH = "C:/Users/hp/Downloads/edgedriver_win64/msedgedriver.exe"
+    driver = webdriver.Edge(PATH)
+
+    url="https://twitter.com/"+name
+    driver.get(url)
+
+    # Setup the log in
+    sleep(6)
+    continue_butt=driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
+    continue_butt.click()
+    sleep(6)
+    username = driver.find_element(By.XPATH,"//input[@name='text']")
+    username.send_keys("jadir99")
+    next_button = driver.find_element(By.XPATH,"//span[contains(text(),'Next')]")
+    next_button.click()
+
+    sleep(3)
+    password = driver.find_element(By.XPATH,"//input[@name='password']")
+    password.send_keys('jadir99jadir99')
+    time.sleep(3)
+    log_in = driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
+    log_in.click()
+    UserTags = []
+    TimeStamps = []
+    Tweets = []
+
+    while len(UserTags)<=50:
+        
+        # Find all the tweet article elements on the page
+        articles = driver.find_elements(By.XPATH, "//article[@data-testid='tweet']")
+        # Extract data from each article
+        for article in articles:
+            try:
+                if(article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']")):
+                    UserTag = article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']").text
+                    UserTags.append(UserTag)
+                if(article.find_element(By.XPATH, ".//time")):
+                    TimeStamp = article.find_element(By.XPATH, ".//time").get_attribute('datetime')
+                    TimeStamps.append(TimeStamp)
+                if(article.find_element(By.XPATH, ".//time")):
+                    Tweet = article.find_element(By.XPATH, ".//div[@data-testid='tweetText']").text
+                    Tweets.append(Tweet)
+            except NoSuchElementException:
+                continue        
+            except StaleElementReferenceException:
+                continue
+
+        # Scroll down to the bottom of the page
+        driver.execute_script('window.scrollTo(0,document.body.scrollHeight);')
+    time.sleep(3)  # Wait for the page to load more articles
+    df = pd.DataFrame(zip(UserTags,TimeStamps,Tweets)
+                ,columns=['UserTags','time','Tweets'])
+    df.to_csv(r"tweets"+name+".csv", index=False)
+    df.to_excel(r"tweets.xlsx", index=False)
+    return "tweets"+name+".csv"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # beggin of cleaning the data :
 
 #function for make data logic for machine  dont => do not
@@ -96,7 +177,7 @@ def replace_contractions(text):
 
 #function to remove hashtags and mensioons in and urls :
 def remove_hashtags_mentions_URLS(text):
-    without_hashtag=re.sub(r'#\S*','',text)
+    without_hashtag=re.sub(r'#\S*','',str(text))
     without_mentions =re.sub(r'@\S*','',without_hashtag)
     return re.sub(r'https?://\S+','',without_mentions)
 
@@ -147,7 +228,7 @@ def clean_data(path):
     df['UserTags']=df['UserTags'].str.lower()
 
     # make correige les faux d'ortographe 
-    df['Tweets']=df['Tweets'].apply(lambda x:replace_contractions(str(x)))
+    # df['Tweets']=df['Tweets'].apply(lambda x:replace_contractions(str(x)))
 
     # applciate the fucntion for claen from urls hashtasg ...
     df['Tweets']=df['Tweets'].apply(lambda x:remove_hashtags_mentions_URLS(x))
@@ -163,7 +244,7 @@ def clean_data(path):
     
 
     # applaying this function in the datframe 
-    df['Tweets']=df['Tweets'].apply(lambda x:stemming(x))
+    # df['Tweets']=df['Tweets'].apply(lambda x:stemming(x))
       
     # save modification 
     df.to_csv(r"clear"+path, index=False)

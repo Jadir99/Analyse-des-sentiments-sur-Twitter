@@ -98,6 +98,14 @@
               <div data-i18n="Analytics">Search by hashtag</div>
             </a>
           </li>
+          
+
+          <li class="menu-item">
+            <a href="{{url_for('byuserame')}}" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-search"></i>
+              <div data-i18n="Analytics">Search by username</div>
+            </a>
+          </li>
         </aside>
         <!-- / Menu -->
 
@@ -111,60 +119,105 @@
               <!-- Basic Layout -->
               <div class="row col d-flex justify-content-center">
                 <div class="col-10">
-                  <div class="card mb-4"></div>
-                  <h4 class="fw-bold py-3 mb-4 text-center pt-5 pb-0">
-                    <span class="text-muted fw-light">DragonLearn/</span>
-                    Sentiment Analyzer
-                  </h4>
+                  <div class="card mb-4">
+                    </div> 
+                    <h4 class="fw-bold py-3 mb-4 text-center pt-5 pb-0">
+                      <span class="text-muted fw-light">DragonLearn/</span>
+                      Sentiment Analyzer
+                    </h4>
 
-
-                  <div class="accordion mt-0 p-5 pt-3" id="accordionExample">
-                      <div class="card mb-4">
-                        <h5 class="card-header">wordcloud</h5>
-                        <div class="card-body">
-                          <div>
-                            <div class="input-group">
-                                <img  class="img-fluid" src="{{ url_for('static', filename='img/' + statistiques[0]) }}" alt="{{statistiques[0]}}">
-                                
-                              <!-- <input type="text" name="hashtag" id=""> -->
-                            </div>
+                    <div
+                      class="accordion mt-3 p-5 pb-0 pt-3"
+                      id="accordionExample"
+                    >
+                      <div class="card accordion-item active">
+                        <h2 class="accordion-header" id="headingOne">
+                          <button
+                            type="button"
+                            class="accordion-button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#accordionOne"
+                            aria-expanded="true"
+                            aria-controls="accordionOne"
+                          >
+                            <h4 class="mb-0 text-center">
+                              Put the username and get the sentiments
+                            </h4>
+                          </button>
+                        </h2>
+                        <div
+                          id="accordionOne"
+                          class="accordion-collapse collapse show"
+                          data-bs-parent="#accordionExample"
+                        >
+                          <div class="accordion-body display-7">
+                            Search by name on Twitter involves seeking out tweets mentioning a 
+                            specific individual or entity within the platform's vast stream of 
+                            conversations. By utilizing advanced search functionalities, users
+                             can pinpoint tweets containing the name in various contexts, from 
+                             mentions in replies to direct references. This process enables 
+                             individuals, businesses, and researchers to track discussions 
+                             surrounding a particular person or entity, monitor public perception,
+                              and gather insights into their online presence and reputation.
+                               Searching by name on Twitter can be instrumental for reputation 
+                               management, understanding audience sentiments, and staying informed 
+                               about ongoing conversations relevant to the named entity.
                           </div>
                         </div>
                       </div>
-                  </div>
+                    </div>
 
-
-                  
-                  <div class="accordion mt-0 p-5 pt-3" id="accordionExample">
-                      <div class="card mb-4">
-                        <h5 class="card-header">bar histogramme </h5>
-                        <div class="card-body">
-                          <div>
-                            <div class="input-group">
-
-                                <img  class="img-fluid" src="{{ url_for('static', filename='img/' + statistiques[1]) }}" alt="{{statistiques[1]}}">
-                              <!-- <input type="text" name="hashtag" id=""> -->
+                    <div class="accordion mt-0 p-5 pt-3" id="accordionExample">
+                      <form action="{{url_for('insert_name')}}" method="post">
+                        <div class="card mb-4">
+                          <h5 class="card-header">Put the username</h5>
+                          <div class="card-body">
+                            <div>
+                              <div class="input-group">
+                                <textarea
+                                  class="form-control"
+                                  name="username"
+                                  aria-label="With textarea"
+                                  placeholder="example"
+                                  rows="4"
+                                  id="hashtag" required
+                                ></textarea>
+                                <!-- <input type="text" name="hashtag" id=""> -->
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                        <div class="row mt-3">
+                          <div class="d-grid gap-2 col-lg-6 mx-auto">
+                            <button
+                              class="btn btn-secondary btn-lg"
+                              type="submit" onclick="wait()"
+                            >
+                              Convert
+                            </button>
+                          </div>
+                        </div>  
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <!-- / Content -->
+
+            <div class="content-backdrop fade"></div>
           </div>
-          <!-- / Content -->
+          <!-- Content wrapper -->
         </div>
-        <!-- Content wrapper -->
+        <!-- / Layout page -->
       </div>
-      <!-- / Layout page -->
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-
-    <!-- Overlay -->
-
     <script>
-      function wait() {
-        alert("please wait");
+      function wait(){
+        alert("please wait")
       }
     </script>
     <!-- / Layout wrapper -->
