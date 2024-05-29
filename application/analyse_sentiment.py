@@ -20,6 +20,7 @@ import contractions
 from nltk.stem import SnowballStemmer
 from nltk import WordNetLemmatizer 
 from textblob import TextBlob
+from selenium.webdriver.edge.service import Service
 
 # login + extraction data from twitter
 
@@ -31,13 +32,16 @@ def login(hashtag):
     if '#' in hashtag:
         hashtag = hashtag.replace('#','')
 
-    PATH = "C:/Users/hp/Downloads/edgedriver_win64/msedgedriver.exe"
-    driver = webdriver.Edge(PATH)
+    PATH ='C:\\Users\\hp\\Downloads\\edge_driver\\msedgedriver.exe'
+    
+    service = Service(PATH)
+    driver = webdriver.Edge(service=service)
+
 
     url="https://twitter.com/search?q=%23"+hashtag+"&src=typed_query&f=top"
     driver.get(url)
 
-    # Setup the log in
+    # Setup the log ina
     sleep(6)
     username = driver.find_element(By.XPATH,"//input[@name='text']")
     username.send_keys("jadir99")
@@ -53,109 +57,122 @@ def login(hashtag):
     TimeStamps = []
     Tweets = []
 
-    while len(UserTags)<=50:
-        
+    while len(Tweets) <= 50:
         # Find all the tweet article elements on the page
         articles = driver.find_elements(By.XPATH, "//article[@data-testid='tweet']")
         # Extract data from each article
         for article in articles:
             try:
-                if(article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']")):
-                    UserTag = article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']").text
-                    if (UserTag not in UserTags):
-                        UserTags.append(UserTag)
-                if(article.find_element(By.XPATH, ".//time")):
-                    TimeStamp = article.find_element(By.XPATH, ".//time").get_attribute('datetime')
-                    if TimeStamp not in TimeStamps and TimeStamp is not None:
-                        TimeStamps.append(TimeStamp)
-                if(article.find_element(By.XPATH, ".//time")):
-                    Tweet = article.find_element(By.XPATH, ".//div[@data-testid='tweetText']").text
-                    if Tweet not in Tweets and Tweet is not None:
-                        Tweets.append(Tweet)
+                UserTag = article.find_element(By.XPATH, ".//div[@dir='ltr']//span").text
+                TimeStamp = article.find_element(By.XPATH, ".//time").get_attribute('datetime')
+                Tweet = article.find_element(By.XPATH, ".//div[@data-testid='tweetText']").text
+
+                UserTags.append(UserTag)
+                TimeStamps.append(TimeStamp)
+                Tweets.append(Tweet)
             except NoSuchElementException:
                 continue        
             except StaleElementReferenceException:
                 continue
 
+        time.sleep(1)
         # Scroll down to the bottom of the page
         driver.execute_script('window.scrollTo(0,document.body.scrollHeight);')
-    time.sleep(3)  # Wait for the page to load more articles
-    df = pd.DataFrame(zip(UserTags,TimeStamps,Tweets)
-                ,columns=['UserTags','time','Tweets'])
-    df.to_csv(r"tweets"+hashtag+".csv", index=False)
-    df.to_excel(r"tweets.xlsx", index=False)
-    return "tweets"+hashtag+".csv"
+        time.sleep(3)  # Wait for the page to load more articles
 
+    # Create a DataFrame and save to CSV and Excel
+    df = pd.DataFrame(list(zip(UserTags, TimeStamps, Tweets)), columns=['UserTags', 'time', 'Tweets'])
+    csv_file = f"static\\csv_files\\tweets{hashtag}.csv"
+    excel_file = f"static\\excel_files\\tweets{hashtag}.xlsx"
+    df.to_csv(csv_file, index=False)
+    df.to_excel(excel_file, index=False)
+
+    driver.quit()
+    
+    return "tweets"+hashtag+".csv"
 
 
 
 
 ## this is for login and inspect the 
 
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+import pandas as pd
+import time
+
 def search_byname(name):
     """
-    function for login and extract data from 
+    Function to log in and extract data (username, date, and tweet text) from Twitter based on a username.
     """
-
+    
     if '@' in name:
-        name = name.replace('@','')
+        name = name.replace('@', '')
 
-    PATH = "C:/Users/hp/Downloads/edgedriver_win64/msedgedriver.exe"
-    driver = webdriver.Edge(PATH)
+    PATH = 'C:\\Users\\hp\\Downloads\\edge_driver\\msedgedriver.exe'
+    
+    service = Service(PATH)
+    driver = webdriver.Edge(service=service)
 
-    url="https://twitter.com/"+name
+    url = 'https://x.com/i/flow/login'
     driver.get(url)
 
-    # Setup the log in
-    sleep(6)
-    continue_butt=driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
-    continue_butt.click()
-    sleep(6)
-    username = driver.find_element(By.XPATH,"//input[@name='text']")
+    # Setup the login
+    time.sleep(6)
+    username = driver.find_element(By.XPATH, "//input[@name='text']")
     username.send_keys("jadir99")
-    next_button = driver.find_element(By.XPATH,"//span[contains(text(),'Next')]")
+    next_button = driver.find_element(By.XPATH, "//span[contains(text(),'Next')]")
     next_button.click()
 
-    sleep(3)
-    password = driver.find_element(By.XPATH,"//input[@name='password']")
+    time.sleep(3)
+    password = driver.find_element(By.XPATH, "//input[@name='password']")
     password.send_keys('jadir99jadir99')
     time.sleep(3)
-    log_in = driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
+    log_in = driver.find_element(By.XPATH, "//span[contains(text(),'Log in')]")
     log_in.click()
+    time.sleep(3)
+    url = f"https://twitter.com/{name}"
+    driver.get(url)
+
     UserTags = []
     TimeStamps = []
     Tweets = []
 
-    while len(UserTags)<=50:
-        
+    while len(Tweets) <= 50:
         # Find all the tweet article elements on the page
         articles = driver.find_elements(By.XPATH, "//article[@data-testid='tweet']")
         # Extract data from each article
         for article in articles:
             try:
-                if(article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']")):
-                    UserTag = article.find_element(By.XPATH, ".//span[@class='css-1qaijid r-bcqeeo r-qvutc0 r-poiln3']").text
-                    UserTags.append(UserTag)
-                if(article.find_element(By.XPATH, ".//time")):
-                    TimeStamp = article.find_element(By.XPATH, ".//time").get_attribute('datetime')
-                    TimeStamps.append(TimeStamp)
-                if(article.find_element(By.XPATH, ".//time")):
-                    Tweet = article.find_element(By.XPATH, ".//div[@data-testid='tweetText']").text
-                    Tweets.append(Tweet)
+                UserTag = article.find_element(By.XPATH, ".//div[@dir='ltr']//span").text
+                TimeStamp = article.find_element(By.XPATH, ".//time").get_attribute('datetime')
+                Tweet = article.find_element(By.XPATH, ".//div[@data-testid='tweetText']").text
+
+                UserTags.append(UserTag)
+                TimeStamps.append(TimeStamp)
+                Tweets.append(Tweet)
             except NoSuchElementException:
                 continue        
             except StaleElementReferenceException:
                 continue
 
+        time.sleep(1)
         # Scroll down to the bottom of the page
         driver.execute_script('window.scrollTo(0,document.body.scrollHeight);')
-    time.sleep(3)  # Wait for the page to load more articles
-    df = pd.DataFrame(zip(UserTags,TimeStamps,Tweets)
-                ,columns=['UserTags','time','Tweets'])
-    df.to_csv(r"tweets"+name+".csv", index=False)
-    df.to_excel(r"tweets.xlsx", index=False)
-    return "tweets"+name+".csv"
+        time.sleep(3)  # Wait for the page to load more articles
 
+    # Create a DataFrame and save to CSV and Excel
+    df = pd.DataFrame(list(zip(UserTags, TimeStamps, Tweets)), columns=['UserTags', 'time', 'Tweets'])
+    csv_file = f"static\\csv_files\\tweets{name}.csv"
+    excel_file = f"static\\excel_files\\tweets{name}.xlsx"
+    df.to_csv(csv_file, index=False)
+    df.to_excel(excel_file, index=False)
+
+    driver.quit()
+    
+    return csv_file
 
 
 
@@ -222,7 +239,7 @@ def get_tweet_sentiment(tweet):
 
 # function call all the subfunctions
 def clean_data(path):
-    df=pd.read_csv(str(path))
+    df=pd.read_csv("static\\csv_files\\"+str(path))
     # make all lower 
     df['Tweets']=df['Tweets'].str.lower()
     df['UserTags']=df['UserTags'].str.lower()
@@ -246,8 +263,8 @@ def clean_data(path):
     # applaying this function in the datframe 
     # df['Tweets']=df['Tweets'].apply(lambda x:stemming(x))
       
-    # save modification 
-    df.to_csv(r"clear"+path, index=False)
+    # save modification
+    df.to_csv(path, index=False)
 
     ## ise textblob to analyse the sentiment 
     sentiments=[]
