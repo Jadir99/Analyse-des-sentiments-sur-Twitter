@@ -32,7 +32,7 @@ def login(hashtag):
     if '#' in hashtag:
         hashtag = hashtag.replace('#','')
 
-    PATH ='C:\\Users\\hp\\Downloads\\edge_driver\\msedgedriver.exe'
+    PATH ='edge_driver\\msedgedriver.exe'
     
     service = Service(PATH)
     driver = webdriver.Edge(service=service)
@@ -111,7 +111,7 @@ def search_byname(name):
     if '@' in name:
         name = name.replace('@', '')
 
-    PATH = 'C:\\Users\\hp\\Downloads\\edge_driver\\msedgedriver.exe'
+    PATH = 'edge_driver\\msedgedriver.exe'
     
     service = Service(PATH)
     driver = webdriver.Edge(service=service)
